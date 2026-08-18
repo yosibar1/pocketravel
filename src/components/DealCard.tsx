@@ -40,14 +40,14 @@ export function DealCard({ deal }: { deal: Deal }) {
             </span>
           )}
         </div>
-        <span className="absolute bottom-3 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-indigo-950 shadow ltr:right-3 rtl:left-3">
+        <span className="absolute bottom-3 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-neutral-900 shadow ltr:right-3 rtl:left-3">
           {deal.nights} {t.nights}
         </span>
       </div>
 
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-baseline justify-between gap-2">
-          <h3 className="text-lg font-bold text-indigo-950">
+          <h3 className="text-lg font-bold text-neutral-900">
             {lt(dest.city)}, {lt(dest.country)}
           </h3>
           <span className="whitespace-nowrap text-sm font-medium text-slate-500">
@@ -61,7 +61,7 @@ export function DealCard({ deal }: { deal: Deal }) {
         </div>
 
         <div className="mt-2 flex flex-wrap gap-1.5">
-          <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-800">
+          <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-700">
             {t[`board_${deal.boardBasis}` as TranslationKey]}
           </span>
           <span
@@ -85,12 +85,12 @@ export function DealCard({ deal }: { deal: Deal }) {
                 {formatPrice(deal.originalPriceUSD, lang)}
               </div>
             )}
-            <div className="text-2xl font-extrabold text-indigo-950">
+            <div className="text-2xl font-extrabold text-neutral-900">
               {formatPrice(deal.pricePerPersonUSD, lang)}
             </div>
             <div className="text-xs text-slate-500">{t.perPersonPackage}</div>
           </div>
-          <span className="rounded-full bg-gradient-to-l from-fuchsia-600 to-rose-500 px-5 py-2 text-sm font-bold text-white shadow-sm transition-transform group-hover:scale-105">
+          <span className="rounded-full bg-neutral-900 px-5 py-2 text-sm font-bold text-white shadow-sm transition-transform group-hover:scale-105">
             {t.toDeal}
           </span>
         </div>

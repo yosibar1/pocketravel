@@ -56,7 +56,7 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
         <div className="p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-extrabold text-indigo-950">
+              <h1 className="text-3xl font-extrabold text-neutral-900">
                 {lt(dest.city)}, {lt(dest.country)}
               </h1>
               <div className="mt-1 flex items-center gap-2 text-slate-600">
@@ -74,7 +74,7 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
                   {formatPrice(deal.originalPriceUSD, lang)}
                 </div>
               )}
-              <div className="text-4xl font-extrabold text-indigo-950">
+              <div className="text-4xl font-extrabold text-neutral-900">
                 {formatPrice(selected.pricePerPersonUSD, lang)}
               </div>
               <div className="text-sm text-slate-500">{t.perPersonPackage}</div>
@@ -82,7 +82,7 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-800">
+            <span className="rounded-full bg-neutral-100 px-3 py-1 text-sm font-medium text-neutral-700">
               🍽 {t[`board_${deal.boardBasis}` as TranslationKey]}
             </span>
             <span className="rounded-full bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">
@@ -95,7 +95,7 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
             )}
           </div>
 
-          <h2 className="mt-8 font-bold text-indigo-950">{t.priceCalendar}</h2>
+          <h2 className="mt-8 font-bold text-neutral-900">{t.priceCalendar}</h2>
           <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
             {variants.map((v, i) => {
               const isSelected = v.startDate === selected.startDate;
@@ -105,14 +105,14 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
                   onClick={() => setSelectedVariant(i)}
                   className={`min-w-32 shrink-0 rounded-2xl border-2 p-3 text-center transition-colors ${
                     isSelected
-                      ? "border-fuchsia-600 bg-fuchsia-50"
+                      ? "border-neutral-900 bg-neutral-100"
                       : "border-slate-200 bg-white hover:border-slate-300"
                   }`}
                 >
                   <div className="text-xs font-medium text-slate-500">
                     {formatDateRange(v.startDate, v.endDate, locale)}
                   </div>
-                  <div className="mt-1 text-lg font-extrabold text-indigo-950">
+                  <div className="mt-1 text-lg font-extrabold text-neutral-900">
                     {formatPrice(v.pricePerPersonUSD, lang)}
                   </div>
                   {v.isCheapest && (
@@ -125,7 +125,7 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
             })}
           </div>
 
-          <h2 className="mt-6 font-bold text-indigo-950">{t.whatsInPackage}</h2>
+          <h2 className="mt-6 font-bold text-neutral-900">{t.whatsInPackage}</h2>
           <ul className="mt-2 flex flex-col gap-1 text-sm text-slate-600">
             <li>
               ✓ {t.pk_flight} ({deal.directFlight ? t.directFlight : t.withStop})
@@ -141,13 +141,13 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
           <div className="mt-8 flex flex-wrap gap-3">
             <button
               onClick={() => alert(t.bookDemoAlert)}
-              className="rounded-full bg-gradient-to-l from-fuchsia-600 to-rose-500 px-8 py-3 font-bold text-white shadow-sm transition-transform hover:scale-105"
+              className="rounded-full bg-neutral-900 px-8 py-3 font-bold text-white shadow-sm transition-colors hover:bg-neutral-800"
             >
               {t.book} · {formatPrice(selected.pricePerPersonUSD, lang)}
             </button>
             <Link
               href={`/planner?destination=${dest.id}&days=${deal.nights + 1}`}
-              className="rounded-full border-2 border-indigo-950 px-6 py-3 font-bold text-indigo-950 transition-colors hover:bg-indigo-50"
+              className="rounded-full border-2 border-neutral-900 px-6 py-3 font-bold text-neutral-900 transition-colors hover:bg-neutral-100"
             >
               🪄 {t.planTrip}
             </Link>
@@ -156,10 +156,10 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
         </div>
       </div>
 
-      <h2 className="mb-3 mt-8 text-xl font-bold text-indigo-950">{t.theHotel}</h2>
+      <h2 className="mb-3 mt-8 text-xl font-bold text-neutral-900">{t.theHotel}</h2>
       <HotelCard hotel={hotel} nights={deal.nights} />
 
-      <h2 className="mb-3 mt-8 text-xl font-bold text-indigo-950">{t.aboutDestination}</h2>
+      <h2 className="mb-3 mt-8 text-xl font-bold text-neutral-900">{t.aboutDestination}</h2>
       <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
         <p className="text-slate-700">{lt(dest.description)}</p>
         <ul className="mt-3 grid grid-cols-1 gap-1 text-sm text-slate-600 sm:grid-cols-2">
@@ -171,7 +171,7 @@ export default function DealPage({ params }: { params: Promise<{ id: string }> }
 
       {similar.length > 0 && (
         <>
-          <h2 className="mb-3 mt-8 text-xl font-bold text-indigo-950">{t.similarDeals}</h2>
+          <h2 className="mb-3 mt-8 text-xl font-bold text-neutral-900">{t.similarDeals}</h2>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {similar.map((d) => (
               <DealCard key={d.id} deal={d} />

@@ -11,6 +11,8 @@ export function GET(req: NextRequest) {
     board: p.get("board") ?? "any",
     maxPriceUSD: p.get("maxPrice") ? Number(p.get("maxPrice")) : undefined,
     directOnly: p.get("direct") === "1",
+    minStars: p.get("stars") ? Number(p.get("stars")) : undefined,
+    luggageOnly: p.get("luggage") === "1",
   });
   return NextResponse.json({ deals: deals.slice(0, 60) });
 }

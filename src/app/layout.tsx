@@ -22,7 +22,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
 
   return (
     <html lang="he" dir="rtl" className={`${rubik.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col bg-slate-50 font-sans text-slate-900">
+      <body className="flex min-h-full flex-col bg-white font-sans text-slate-900">
         <LanguageProvider>
           <Header
             googleConfigured={googleConfigured}

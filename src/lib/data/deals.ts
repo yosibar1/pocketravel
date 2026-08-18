@@ -1,6 +1,6 @@
 import type { BoardBasis, Deal, DealDateVariant } from "@/lib/types";
 import { destinations, getDestination } from "./destinations";
-import { getHotelsForDestination } from "./hotels";
+import { getHotel, getHotelsForDestination } from "./hotels";
 
 // Destination groups used by the feed's "where to" chips.
 export const regionGroups: Record<string, string[]> = {
@@ -114,6 +114,8 @@ export interface DealFilters {
   board?: string; // "any" | BoardBasis
   maxPriceUSD?: number;
   directOnly?: boolean;
+  minStars?: number;
+  luggageOnly?: boolean;
 }
 
 export function searchDeals(filters: DealFilters): Deal[] {
@@ -148,6 +150,12 @@ export function searchDeals(filters: DealFilters): Deal[] {
   }
   if (filters.directOnly) {
     deals = deals.filter((d) => d.directFlight);
+  }
+  if (filters.minStars) {
+    deals = deals.filter((d) => (getHotel(d.hotelId)?.stars ?? 0) >= filters.minStars!);
+  }
+  if (filters.luggageOnly) {
+    deals = deals.filter((d) => d.luggageIncluded);
   }
 
   return deals.sort((a, b) => a.pricePerPersonUSD - b.pricePerPersonUSD);
