@@ -57,6 +57,31 @@ export interface VacationPackage {
   highlight: LocalizedText;
 }
 
+export type BoardBasis = "RO" | "BB" | "HB" | "AI";
+
+export interface Deal {
+  id: string;
+  destinationId: string;
+  hotelId: string;
+  startDate: string; // YYYY-MM-DD
+  endDate: string; // YYYY-MM-DD
+  nights: number;
+  boardBasis: BoardBasis;
+  directFlight: boolean;
+  luggageIncluded: boolean;
+  pricePerPersonUSD: number;
+  originalPriceUSD?: number; // set when the price dropped
+  isHot: boolean;
+  score: number; // internal ranking 0-100
+}
+
+export interface DealDateVariant {
+  startDate: string;
+  endDate: string;
+  pricePerPersonUSD: number;
+  isCheapest: boolean;
+}
+
 export interface ItineraryActivity {
   time: string;
   title: string;

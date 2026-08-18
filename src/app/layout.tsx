@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
+import { Rubik } from "next/font/google";
 import "./globals.css";
+
+const rubik = Rubik({
+  subsets: ["hebrew", "latin"],
+  variable: "--font-rubik",
+});
 import { LanguageProvider } from "@/components/LanguageProvider";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -15,8 +21,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const session = googleConfigured ? await auth() : null;
 
   return (
-    <html lang="he" dir="rtl" className="h-full antialiased">
-      <body className="flex min-h-full flex-col bg-slate-50 text-slate-900">
+    <html lang="he" dir="rtl" className={`${rubik.variable} h-full antialiased`}>
+      <body className="flex min-h-full flex-col bg-slate-50 font-sans text-slate-900">
         <LanguageProvider>
           <Header
             googleConfigured={googleConfigured}
