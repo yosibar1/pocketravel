@@ -23,6 +23,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="he" dir="rtl" className={`${rubik.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-white font-sans text-slate-900">
+        {/* Travelpayouts Drive — affiliate snippet, installed at the owner's request */}
+        <script
+          data-cmp-ab="2"
+          dangerouslySetInnerHTML={{
+            __html: `(function () { var script = document.createElement("script"); script.async = 1; script.setAttribute("data-cmp-ab","2"); script.src = 'https://emrldtp.cc/NTYzNzkz.js?t=563793'; document.head.appendChild(script); })();`,
+          }}
+        />
         <LanguageProvider>
           <Header
             googleConfigured={googleConfigured}
