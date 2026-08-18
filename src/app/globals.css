@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Heebo",
+    Arial,
+    sans-serif;
+}
+
+input[type="date"] {
+  min-height: 2.5rem;
+}
