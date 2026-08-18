@@ -23,13 +23,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="he" dir="rtl" className={`${rubik.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-white font-sans text-slate-900">
-        {/* Travelpayouts Drive — affiliate snippet, installed at the owner's request */}
-        <script
-          data-cmp-ab="2"
-          dangerouslySetInnerHTML={{
-            __html: `(function () { var script = document.createElement("script"); script.async = 1; script.setAttribute("data-cmp-ab","2"); script.src = 'https://emrldtp.cc/NTYzNzkz.js?t=563793'; document.head.appendChild(script); })();`,
-          }}
-        />
+        {/* Travelpayouts Drive — affiliate script, installed at the owner's request.
+            An async external script is hoisted by React into the document head. */}
+        <script async data-cmp-ab="2" src="https://emrldtp.cc/NTYzNzkz.js?t=563793" />
         <LanguageProvider>
           <Header
             googleConfigured={googleConfigured}
