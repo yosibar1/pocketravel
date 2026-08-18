@@ -35,6 +35,7 @@ Copy `.env.example` to `.env.local` and fill in what you need:
 | --- | --- |
 | `ANTHROPIC_API_KEY` | AI-generated itineraries in the trip planner |
 | `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_SECRET` | Google sign-in |
+| `TRAVELPAYOUTS_TOKEN` | Real flight prices in flight search (Travelpayouts/Aviasales data API) |
 
 Everything works without any env vars (guest mode + rules-based planner).
 
