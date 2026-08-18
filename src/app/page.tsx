@@ -35,7 +35,9 @@ function Chip({
       type="button"
       onClick={onClick}
       className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-        active ? "bg-neutral-900 text-white" : "bg-white text-neutral-600 ring-1 ring-neutral-200 hover:bg-neutral-50"
+        active
+          ? "bg-neutral-900 text-white"
+          : "bg-white text-neutral-600 ring-1 ring-neutral-200 hover:bg-neutral-50"
       }`}
     >
       {children}
@@ -164,45 +166,29 @@ export default function HomePage() {
   const datesValue =
     (month === "any" ? t.allDates : monthLabel(month)) +
     (nights !== "any" ? ` · ${t[`nights_${nights}` as TranslationKey]}` : "");
+  const typeValue = type === "any" ? t.allVacationTypes : t[`tag_${type}` as TranslationKey];
+  const paxValue = `${adults} ${t.adultsLabel}, ${rooms} ${t.roomLabel}`;
   const budgetValue =
     maxPrice >= 3000 ? `${t.budgetLabel}: ${t.noLimit}` : `${t.budgetLabel}: $${maxPrice} -`;
+  const ctaLabel = loading ? t.counting : t.showResults.replace("{n}", String(deals.length));
 
-  return (
-    <div className="bg-white">
-      <section className="mx-auto max-w-xl px-4 pb-4 pt-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-extrabold text-neutral-900">{t.searchWhatTitle}</h1>
-          <Link
-            href="/planner"
-            className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-4 py-2 text-sm font-semibold text-neutral-800 transition-colors hover:bg-neutral-200"
-          >
-            {t.aiTripFinder} <span aria-hidden>✨</span>
-          </Link>
-        </div>
-
-        <div className="mt-5 flex flex-col gap-3">
-          <FieldRow icon="🛫" value={lt(originLabel)} open={openRow === "origin"} onToggle={() => toggleRow("origin")}>
-            {origins.map((o) => (
-              <Chip key={o.code} active={origin === o.code} onClick={() => setOrigin(o.code)}>
-                {lt(o.label)}
-              </Chip>
-            ))}
-          </FieldRow>
-
-          <FieldRow
-            icon="🗺️"
-            value={type === "any" ? t.allVacationTypes : t[`tag_${type}` as TranslationKey]}
-            open={openRow === "type"}
-            onToggle={() => toggleRow("type")}
-          >
-            {TYPES.map((ty) => (
-              <Chip key={ty} active={type === ty} onClick={() => setType(ty)}>
-                {ty === "any" ? t.allVacationTypes : t[`tag_${ty}` as TranslationKey]}
-              </Chip>
-            ))}
-          </FieldRow>
-
-          <FieldRow icon="📍" value={placeValue} open={openRow === "place"} onToggle={() => toggleRow("place")}>
+  const renderPicker = (row: string) => {
+    switch (row) {
+      case "origin":
+        return origins.map((o) => (
+          <Chip key={o.code} active={origin === o.code} onClick={() => setOrigin(o.code)}>
+            {lt(o.label)}
+          </Chip>
+        ));
+      case "type":
+        return TYPES.map((ty) => (
+          <Chip key={ty} active={type === ty} onClick={() => setType(ty)}>
+            {ty === "any" ? t.allVacationTypes : t[`tag_${ty}` as TranslationKey]}
+          </Chip>
+        ));
+      case "place":
+        return (
+          <>
             {REGIONS.map((r) => (
               <Chip key={r} active={region === r} onClick={() => setRegion(r)}>
                 {r === "all" ? t.allDestinations : t[`region_${r}` as TranslationKey]}
@@ -215,9 +201,11 @@ export default function HomePage() {
                 </Chip>
               ))}
             </div>
-          </FieldRow>
-
-          <FieldRow icon="📅" value={datesValue} open={openRow === "dates"} onToggle={() => toggleRow("dates")}>
+          </>
+        );
+      case "dates":
+        return (
+          <>
             <Chip active={month === "any"} onClick={() => setMonth("any")}>
               {t.anyMonth}
             </Chip>
@@ -234,14 +222,11 @@ export default function HomePage() {
                 </Chip>
               ))}
             </div>
-          </FieldRow>
-
-          <FieldRow
-            icon="👤"
-            value={`${adults} ${t.adultsLabel}, ${rooms} ${t.roomLabel}`}
-            open={openRow === "pax"}
-            onToggle={() => toggleRow("pax")}
-          >
+          </>
+        );
+      case "pax":
+        return (
+          <>
             <label className="flex items-center gap-2 text-sm font-medium text-neutral-700">
               {t.adultsLabel}:
               <select
@@ -270,6 +255,127 @@ export default function HomePage() {
                 ))}
               </select>
             </label>
+          </>
+        );
+      case "budget":
+        return (
+          <label className="flex w-full max-w-md items-center gap-3 text-sm font-medium text-neutral-700">
+            ${maxPrice >= 3000 ? "∞" : maxPrice}
+            <input
+              type="range"
+              min={300}
+              max={3000}
+              step={100}
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              className="flex-1 accent-neutral-900"
+            />
+          </label>
+        );
+      case "stars":
+        return [0, 3, 4, 5].map((s) => (
+          <Chip key={s} active={minStars === s} onClick={() => setMinStars(s)}>
+            {s === 0 ? t.anyOption : `${"★".repeat(s)}${s < 5 ? "+" : ""}`}
+          </Chip>
+        ));
+      case "board":
+        return BOARDS.map((b) => (
+          <Chip key={b} active={board === b} onClick={() => setBoard(b)}>
+            {b === "any" ? t.anyOption : t[`board_${b}` as TranslationKey]}
+          </Chip>
+        ));
+      case "stops":
+        return (
+          <>
+            <Chip active={!directOnly} onClick={() => setDirectOnly(false)}>
+              {t.anyOption}
+            </Chip>
+            <Chip active={directOnly} onClick={() => setDirectOnly(true)}>
+              {t.directOnly}
+            </Chip>
+          </>
+        );
+      case "luggage":
+        return (
+          <>
+            <Chip active={!luggageOnly} onClick={() => setLuggageOnly(false)}>
+              {t.luggageAny}
+            </Chip>
+            <Chip active={luggageOnly} onClick={() => setLuggageOnly(true)}>
+              {t.luggageIncluded}
+            </Chip>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const desktopFields = [
+    { key: "origin", title: t.from, value: lt(originLabel) },
+    { key: "type", title: t.typeChip, value: typeValue },
+    { key: "place", title: t.whereChip, value: placeValue },
+    { key: "dates", title: t.whenChip, value: datesValue },
+    { key: "pax", title: t.passengers, value: paxValue },
+  ];
+
+  const moreFilterPills = [
+    { key: "budget", icon: "💰", value: budgetValue, active: maxPrice < 3000 },
+    {
+      key: "stars",
+      icon: "⭐",
+      value: minStars ? `${minStars}+ ${t.hotelStars}` : t.hotelStars,
+      active: minStars > 0,
+    },
+    {
+      key: "board",
+      icon: "🍽️",
+      value: board === "any" ? t.boardBasis : t[`board_${board}` as TranslationKey],
+      active: board !== "any",
+    },
+    {
+      key: "stops",
+      icon: "✈️",
+      value: directOnly ? t.directFlight : t.stopsLabel,
+      active: directOnly,
+    },
+    {
+      key: "luggage",
+      icon: "🧳",
+      value: luggageOnly ? t.luggageIncluded : t.luggageLabel,
+      active: luggageOnly,
+    },
+  ];
+
+  return (
+    <div className="bg-white">
+      {/* ---------- Mobile: stacked pill sheet ---------- */}
+      <section className="mx-auto max-w-xl px-4 pb-4 pt-8 md:hidden">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-extrabold text-neutral-900">{t.searchWhatTitle}</h1>
+          <Link
+            href="/planner"
+            className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-4 py-2 text-sm font-semibold text-neutral-800 transition-colors hover:bg-neutral-200"
+          >
+            {t.aiTripFinder} <span aria-hidden>✨</span>
+          </Link>
+        </div>
+
+        <div className="mt-5 flex flex-col gap-3">
+          <FieldRow icon="🛫" value={lt(originLabel)} open={openRow === "origin"} onToggle={() => toggleRow("origin")}>
+            {renderPicker("origin")}
+          </FieldRow>
+          <FieldRow icon="🗺️" value={typeValue} open={openRow === "type"} onToggle={() => toggleRow("type")}>
+            {renderPicker("type")}
+          </FieldRow>
+          <FieldRow icon="📍" value={placeValue} open={openRow === "place"} onToggle={() => toggleRow("place")}>
+            {renderPicker("place")}
+          </FieldRow>
+          <FieldRow icon="📅" value={datesValue} open={openRow === "dates"} onToggle={() => toggleRow("dates")}>
+            {renderPicker("dates")}
+          </FieldRow>
+          <FieldRow icon="👤" value={paxValue} open={openRow === "pax"} onToggle={() => toggleRow("pax")}>
+            {renderPicker("pax")}
           </FieldRow>
 
           {!showMore ? (
@@ -286,72 +392,39 @@ export default function HomePage() {
           ) : (
             <>
               <FieldRow icon="💰" value={budgetValue} open={openRow === "budget"} onToggle={() => toggleRow("budget")}>
-                <label className="flex w-full items-center gap-3 text-sm font-medium text-neutral-700">
-                  ${maxPrice >= 3000 ? "∞" : maxPrice}
-                  <input
-                    type="range"
-                    min={300}
-                    max={3000}
-                    step={100}
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(Number(e.target.value))}
-                    className="flex-1 accent-neutral-900"
-                  />
-                </label>
+                {renderPicker("budget")}
               </FieldRow>
-
               <FieldRow
                 icon="⭐"
                 value={minStars ? `${minStars}+ ${t.hotelStars}` : t.hotelStars}
                 open={openRow === "stars"}
                 onToggle={() => toggleRow("stars")}
               >
-                {[0, 3, 4, 5].map((s) => (
-                  <Chip key={s} active={minStars === s} onClick={() => setMinStars(s)}>
-                    {s === 0 ? t.anyOption : `${"★".repeat(s)}${s < 5 ? "+" : ""}`}
-                  </Chip>
-                ))}
+                {renderPicker("stars")}
               </FieldRow>
-
               <FieldRow
                 icon="🍽️"
                 value={board === "any" ? t.boardBasis : t[`board_${board}` as TranslationKey]}
                 open={openRow === "board"}
                 onToggle={() => toggleRow("board")}
               >
-                {BOARDS.map((b) => (
-                  <Chip key={b} active={board === b} onClick={() => setBoard(b)}>
-                    {b === "any" ? t.anyOption : t[`board_${b}` as TranslationKey]}
-                  </Chip>
-                ))}
+                {renderPicker("board")}
               </FieldRow>
-
               <FieldRow
                 icon="✈️"
                 value={directOnly ? t.directFlight : t.stopsLabel}
                 open={openRow === "stops"}
                 onToggle={() => toggleRow("stops")}
               >
-                <Chip active={!directOnly} onClick={() => setDirectOnly(false)}>
-                  {t.anyOption}
-                </Chip>
-                <Chip active={directOnly} onClick={() => setDirectOnly(true)}>
-                  {t.directOnly}
-                </Chip>
+                {renderPicker("stops")}
               </FieldRow>
-
               <FieldRow
                 icon="🧳"
                 value={luggageOnly ? t.luggageIncluded : t.luggageLabel}
                 open={openRow === "luggage"}
                 onToggle={() => toggleRow("luggage")}
               >
-                <Chip active={!luggageOnly} onClick={() => setLuggageOnly(false)}>
-                  {t.luggageAny}
-                </Chip>
-                <Chip active={luggageOnly} onClick={() => setLuggageOnly(true)}>
-                  {t.luggageIncluded}
-                </Chip>
+                {renderPicker("luggage")}
               </FieldRow>
             </>
           )}
@@ -369,11 +442,90 @@ export default function HomePage() {
             href="#results"
             className="flex-1 rounded-full bg-neutral-900 px-6 py-3.5 text-center font-bold text-white transition-colors hover:bg-neutral-800"
           >
-            {loading ? t.counting : t.showResults.replace("{n}", String(deals.length))}
+            {ctaLabel}
           </a>
         </div>
       </section>
 
+      {/* ---------- Desktop: horizontal search bar ---------- */}
+      <section className="hidden px-4 pb-2 pt-12 md:block">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-6 flex items-center justify-center gap-4">
+            <h1 className="text-3xl font-extrabold text-neutral-900">{t.searchWhatTitle}</h1>
+            <Link
+              href="/planner"
+              className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-4 py-2 text-sm font-semibold text-neutral-800 transition-colors hover:bg-neutral-200"
+            >
+              {t.aiTripFinder} <span aria-hidden>✨</span>
+            </Link>
+          </div>
+
+          <div className="relative">
+            {openRow && (
+              <div className="fixed inset-0 z-20" onClick={() => setOpenRow(null)} />
+            )}
+
+            <div className="relative z-30 flex items-stretch gap-1 rounded-full bg-white p-2 shadow-lg shadow-neutral-200/70 ring-1 ring-neutral-200">
+              {desktopFields.map((f, i) => (
+                <div key={f.key} className="flex min-w-0 flex-1 items-center">
+                  {i > 0 && <div className="h-8 w-px shrink-0 bg-neutral-200" />}
+                  <button
+                    type="button"
+                    onClick={() => toggleRow(f.key)}
+                    className={`min-w-0 flex-1 rounded-full px-4 py-2 text-start transition-colors ${
+                      openRow === f.key ? "bg-neutral-100" : "hover:bg-neutral-50"
+                    }`}
+                  >
+                    <div className="text-xs font-bold text-neutral-500">{f.title}</div>
+                    <div className="truncate text-sm font-semibold text-neutral-900">
+                      {f.value}
+                    </div>
+                  </button>
+                </div>
+              ))}
+              <a
+                href="#results"
+                onClick={() => setOpenRow(null)}
+                className="flex shrink-0 items-center rounded-full bg-neutral-900 px-7 font-bold text-white transition-colors hover:bg-neutral-800"
+              >
+                {ctaLabel}
+              </a>
+            </div>
+
+            {openRow && (
+              <div className="absolute inset-x-0 top-full z-30 mt-2 flex flex-wrap gap-2 rounded-3xl bg-white p-5 shadow-xl ring-1 ring-neutral-200">
+                {renderPicker(openRow)}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            {moreFilterPills.map((p) => (
+              <button
+                key={p.key}
+                type="button"
+                onClick={() => toggleRow(p.key)}
+                className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  p.active || openRow === p.key
+                    ? "bg-neutral-900 text-white"
+                    : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
+                }`}
+              >
+                <span aria-hidden>{p.icon}</span> {p.value}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={clearAll}
+              className="flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-neutral-500 transition-colors hover:bg-neutral-100"
+            >
+              🧹 {t.clearAll}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- Feed ---------- */}
       <section id="results" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-10">
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-lg font-bold text-neutral-900">
